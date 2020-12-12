@@ -1,0 +1,11 @@
+﻿{
+  "profiles": {
+    "PotatoBot.Discord": {
+      "commandName": "Project",
+      "dotnetRunMessages": "true",
+      "environmentVariables": {
+        "DOTNET_ENVIRONMENT": "Development"
+      }
+    }
+  }
+}
