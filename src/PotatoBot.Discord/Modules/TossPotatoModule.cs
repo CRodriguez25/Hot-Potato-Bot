@@ -64,12 +64,6 @@ namespace PotatoBot.Discord.Modules
             {
                 await ReplyAsync($"{targetPlayerMention} now has the :potato:, but it's too hot to eat! Toss it!");
             }
-            else
-            {
-                _guildGameRepository.RemoveGuildGame(guildGame);
-                await ReplyAsync($"Mmm... The :potato: is finally cool enough to eat! {targetPlayerMention} swallows it whole!");
-                await ReplyAsync($":nauseated_face: Uh oh! The potato was rotten or something! {targetPlayerMention} vomits all over the floor! :face_vomiting:");
-            }
         }
 
         private GuildGame CreateGameForGuild(IGuild guild, IUser user)
@@ -78,7 +72,7 @@ namespace PotatoBot.Discord.Modules
             var game = new Domain.Models.Game(player);
             var guildGame = new GuildGame {
                 CurrentGame = game,
-                GuildId = guild.Id
+                GuildId = guild.Id, 
             };
 
             guildGame.Players.Add(user.Id, player);
@@ -92,6 +86,18 @@ namespace PotatoBot.Discord.Modules
             await ReplyAsync($":fire: OH NO! IT'S TOO HOT! {Context.User.Mention} tosses it to {targetPlayerMention} :fire:");
             var guildGame = CreateGameForGuild(Context.Guild, Context.User);
             guildGame.ReplyAsync = (msg) => ReplyAsync(msg);
+
+            guildGame.OnGameOver = async () => {
+                var potatoHolder = guildGame.CurrentGame.PotatoHolder;
+                var potatoHolderDiscordId = guildGame.Players.First(x => x.Value.Id == potatoHolder.Id).Key;
+                var targetPlayerMention = MentionUtils.MentionUser(potatoHolderDiscordId);
+                                
+                await ReplyAsync($"Mmm... The :potato: is finally cool enough to eat! {targetPlayerMention} swallows it whole!");
+                await ReplyAsync($":nauseated_face: Uh oh! The potato was rotten or something! {targetPlayerMention} vomits all over the floor! :face_vomiting:");
+                _guildGameRepository.RemoveGuildGame(guildGame);
+            };
+
+            guildGame.CurrentGame.OnGameOver = guildGame.OnGameOver;
             return guildGame;
         }
     }

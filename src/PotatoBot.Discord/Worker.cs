@@ -61,7 +61,7 @@ namespace PotatoBot.Discord
                 
                  await _commands.AddModulesAsync(assembly: Assembly.GetEntryAssembly(), 
                                                  services: _serviceProvider);
-                                                 
+
                 _tickTimer = new Timer(
                     new TimerCallback(TickTimer), 
                     null, 
@@ -83,16 +83,7 @@ namespace PotatoBot.Discord
                 try 
                 {
                     if (guildGame.CurrentGame.IsOver) continue;
-                    var didGameEnd = guildGame.Tick();
-                    if (didGameEnd)
-                    {
-                        var potatoHolder = guildGame.CurrentGame.PotatoHolder;
-                        var potatoHolderDiscordId = guildGame.Players.First(x => x.Value.Id == potatoHolder.Id).Key;
-                        var targetPlayerMention = MentionUtils.MentionUser(potatoHolderDiscordId);
-                        await guildGame.ReplyAsync($"Mmm... The :potato: is finally cool enough to eat! {targetPlayerMention} swallows it whole!");
-                        await guildGame.ReplyAsync($":nauseated_face: Uh oh! The potato was rotten or something! {targetPlayerMention} vomits all over the floor! :face_vomiting:");
-                        guildGameRepo.RemoveGuildGame(guildGame);
-                    }
+                    guildGame.Tick();
                 }
                 catch(Exception e)
                 {
@@ -111,7 +102,7 @@ namespace PotatoBot.Discord
             int argPos = 0;
 
             // Determine if the message is a command based on the prefix and make sure no bots trigger commands
-            if (!(message.HasStringPrefix("potato ", ref argPos, StringComparison.InvariantCultureIgnoreCase) || 
+            if (!(message.HasStringPrefix("pot ", ref argPos, StringComparison.InvariantCultureIgnoreCase) || 
                 message.HasMentionPrefix(_client.CurrentUser, ref argPos)) ||
                 message.Author.IsBot)
                 return;

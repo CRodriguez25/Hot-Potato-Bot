@@ -12,7 +12,7 @@ namespace PotatoBot.Domain.Models
         public bool IsOver => GamePotato.Heat <= 0;
 
         public Player PotatoHolder => Players.First(x => x.IsHoldingPotato);
-
+        public Action OnGameOver = null;
         public Game(Player baker)
         {
             Id = new Guid();
