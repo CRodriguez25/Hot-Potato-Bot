@@ -102,7 +102,7 @@ namespace PotatoBot.Discord
             int argPos = 0;
 
             // Determine if the message is a command based on the prefix and make sure no bots trigger commands
-            if (!(message.HasStringPrefix("pot ", ref argPos, StringComparison.InvariantCultureIgnoreCase) || 
+            if (!(message.HasStringPrefix("potato ", ref argPos, StringComparison.InvariantCultureIgnoreCase) || 
                 message.HasMentionPrefix(_client.CurrentUser, ref argPos)) ||
                 message.Author.IsBot)
                 return;
